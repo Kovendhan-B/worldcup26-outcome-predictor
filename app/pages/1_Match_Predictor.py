@@ -13,6 +13,7 @@ sys.path.append(str(PROJECT_ROOT))
 
 from src.predictor import predict_match
 from src.team_profiles import TeamProfiles
+from src.flags import flag, flag_label
 from data.worldcup_teams import WORLD_CUP_2026_TEAMS
 
 # ----------------------------------
@@ -65,14 +66,16 @@ col1, col2 = st.columns(2)
 with col1:
     home_team = st.selectbox(
         "🏠 Home Team",
-        teams
+        teams,
+        format_func=flag_label
     )
 
 with col2:
     away_team = st.selectbox(
         "✈️ Away Team",
         teams,
-        index=min(1, len(teams) - 1)
+        index=min(1, len(teams) - 1),
+        format_func=flag_label
     )
 
 neutral = st.checkbox(
@@ -111,8 +114,9 @@ if st.button("🔮 Predict Match Outcome"):
 
         winner_prob = result[winner]
 
-        st.success(
-            f"🏆 Predicted Outcome: {winner} ({winner_prob:.2f}%)"
+        st.markdown(
+            f"🏆 Predicted Outcome: {winner} ({winner_prob:.2f}%) — {flag(home_team)} vs {flag(away_team)}",
+            unsafe_allow_html=True
         )
 
         st.divider()

@@ -12,6 +12,7 @@ sys.path.append(str(PROJECT_ROOT))
 
 from src.tournament import simulate_full_tournament
 from src.bracket import build_bracket
+from src.flags import flag
 
 # ----------------------------------
 # Page Config
@@ -55,7 +56,6 @@ if st.button("⚡ Start Tournament"):
 
     groups = sorted(data["group_standings"].keys())
 
-    # Display groups in rows of 3
     for row_start in range(0, len(groups), 3):
 
         cols = st.columns(3)
@@ -71,41 +71,80 @@ if st.button("⚡ Start Tournament"):
 
                 with col:
                     st.subheader(f"Group {group}")
-                    st.dataframe(
-                        standings[["Team", "P", "W", "D", "L", "Pts"]],
-                        width="stretch",
-                        hide_index=True
+
+                    # Build HTML table with flags
+                    html = (
+                        '<table style="width:100%; '
+                        'border-collapse:collapse; '
+                        'font-size:14px;">'
+                        '<tr style="border-bottom:2px solid #444;">'
+                        '<th style="text-align:left; padding:6px;">Team</th>'
+                        '<th style="padding:6px;">P</th>'
+                        '<th style="padding:6px;">W</th>'
+                        '<th style="padding:6px;">D</th>'
+                        '<th style="padding:6px;">L</th>'
+                        '<th style="padding:6px;">Pts</th>'
+                        '</tr>'
+                    )
+
+                    for _, row in standings.iterrows():
+                        html += (
+                            '<tr style="border-bottom:1px solid #333;">'
+                            f'<td style="text-align:left; padding:6px;">'
+                            f'{flag(row["Team"])}</td>'
+                            f'<td style="text-align:center; padding:6px;">'
+                            f'{row["P"]}</td>'
+                            f'<td style="text-align:center; padding:6px;">'
+                            f'{row["W"]}</td>'
+                            f'<td style="text-align:center; padding:6px;">'
+                            f'{row["D"]}</td>'
+                            f'<td style="text-align:center; padding:6px;">'
+                            f'{row["L"]}</td>'
+                            f'<td style="text-align:center; padding:6px; '
+                            f'font-weight:bold;">'
+                            f'{row["Pts"]}</td>'
+                            '</tr>'
+                        )
+
+                    html += '</table>'
+
+                    st.markdown(
+                        html,
+                        unsafe_allow_html=True
                     )
 
     # ==============================
     # QUALIFIED TEAMS
     # ==============================
 
-    st.header("✅ Qualified for Knockout Stage")
+    st.header("Qualified for Knockout Stage")
 
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        st.subheader("🥇 Group Winners")
+        st.subheader("Group Winners")
         for g in sorted(data["group_winners"].keys()):
-            st.write(
-                f"**{g}**: {data['group_winners'][g]}"
+            st.markdown(
+                f"**{g}**: {flag(data['group_winners'][g])}",
+                unsafe_allow_html=True
             )
 
     with col2:
-        st.subheader("🥈 Runners-up")
+        st.subheader("Runners-up")
         for g in sorted(data["group_runners_up"].keys()):
-            st.write(
-                f"**{g}**: {data['group_runners_up'][g]}"
+            st.markdown(
+                f"**{g}**: {flag(data['group_runners_up'][g])}",
+                unsafe_allow_html=True
             )
 
     with col3:
-        st.subheader("🎯 Best 3rd Place")
+        st.subheader("Best 3rd Place")
         for entry in data["best_thirds"]:
-            st.write(
+            st.markdown(
                 f"**{entry['group']}**: "
-                f"{entry['team']} "
-                f"({entry['pts']} pts)"
+                f"{flag(entry['team'])} "
+                f"({entry['pts']} pts)",
+                unsafe_allow_html=True
             )
 
     # ==============================
@@ -115,11 +154,11 @@ if st.button("⚡ Start Tournament"):
     bracket = build_bracket(data)
 
     knockout_stages = [
-        ("🏟️ Round of 32", "Round of 32"),
-        ("⚔️ Round of 16", "Round of 16"),
-        ("🔥 Quarterfinals", "Quarterfinal"),
-        ("💥 Semifinals", "Semifinal"),
-        ("🏆 Final", "Final"),
+        ("Round of 32", "Round of 32"),
+        ("Round of 16", "Round of 16"),
+        ("Quarterfinals", "Quarterfinal"),
+        ("Semifinals", "Semifinal"),
+        ("Final", "Final"),
     ]
 
     for display_name, stage_key in knockout_stages:
@@ -128,7 +167,6 @@ if st.button("⚡ Start Tournament"):
 
         matches = bracket[stage_key]
 
-        # Use columns for compact display
         num_cols = min(len(matches), 4)
         cols = st.columns(num_cols)
 
@@ -143,19 +181,20 @@ if st.button("⚡ Start Tournament"):
                 )
 
                 home_label = (
-                    f"✅ **{match['home']}**"
+                    f"<b>{flag(match['home'])}</b>"
                     if is_winner_home
-                    else match["home"]
+                    else flag(match["home"])
                 )
 
                 away_label = (
-                    f"✅ **{match['away']}**"
+                    f"<b>{flag(match['away'])}</b>"
                     if not is_winner_home
-                    else match["away"]
+                    else flag(match["away"])
                 )
 
                 st.markdown(
-                    f"{home_label} vs {away_label}"
+                    f"{home_label} vs {away_label}",
+                    unsafe_allow_html=True
                 )
 
                 st.caption(
@@ -172,13 +211,19 @@ if st.button("⚡ Start Tournament"):
 
     st.header("")
 
-    st.success(
-        f"🏆 Predicted Champion: {data['champion']}"
+    st.markdown(
+        f"### 🏆 Predicted Champion: {flag(data['champion'])}",
+        unsafe_allow_html=True
     )
 
-    st.info(
-        f"🥈 Runner-up: {data['runner_up']}"
+    st.markdown(
+        f"### 🥈 Runner-up: {flag(data['runner_up'])}",
+        unsafe_allow_html=True
     )
+
+    # ==============================
+    # GROUP STAGE MATCH RESULTS
+    # ==============================
 
     st.header("📋 Group Stage Match Results")
 
@@ -197,11 +242,12 @@ if st.button("⚡ Start Tournament"):
                     result_text = "🤝 Draw"
                 else:
                     result_text = (
-                        f"✅ {match['winner']} wins"
+                        f"{flag(match['winner'])} wins"
                     )
 
                 st.markdown(
-                    f"{match['home_team']} vs "
-                    f"{match['away_team']} → "
-                    f"*{result_text}*"
+                    f"{flag(match['home_team'])} vs "
+                    f"{flag(match['away_team'])} → "
+                    f"*{result_text}*",
+                    unsafe_allow_html=True
                 )
