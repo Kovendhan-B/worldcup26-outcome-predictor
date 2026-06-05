@@ -78,13 +78,15 @@ teams = sorted([
 # Banner
 # ----------------------------------
 
-BANNER_PATH = PROJECT_ROOT / "assets" / "banner.jpg"
+BANNER_PATH = PROJECT_ROOT / "assets" / "banner.png"
 
 if BANNER_PATH.exists():
-    st.image(
-        str(BANNER_PATH),
-        use_container_width=True
-    )
+    left, center, right = st.columns([1, 2, 1])
+    with center:
+        st.image(
+            str(BANNER_PATH),
+            use_container_width=True
+        )
 
 # ----------------------------------
 # Title
