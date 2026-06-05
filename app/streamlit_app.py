@@ -75,6 +75,18 @@ teams = sorted([
 ])
 
 # ----------------------------------
+# Banner
+# ----------------------------------
+
+BANNER_PATH = PROJECT_ROOT / "assets" / "banner.jpg"
+
+if BANNER_PATH.exists():
+    st.image(
+        str(BANNER_PATH),
+        use_container_width=True
+    )
+
+# ----------------------------------
 # Title
 # ----------------------------------
 
@@ -90,6 +102,7 @@ st.markdown(
 st.caption(
     f"Available Teams: {len(teams)}"
 )
+
 
 # ----------------------------------
 # Team Selection
