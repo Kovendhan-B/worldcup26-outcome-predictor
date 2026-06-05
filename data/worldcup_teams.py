@@ -10,7 +10,7 @@ WORLD_CUP_2026_TEAMS = [
     "Cape Verde",
     "Colombia",
     "Croatia",
-    "Curacao",
+    "Curaçao",
     "Czech Republic",
     "DR Congo",
     "Ecuador",

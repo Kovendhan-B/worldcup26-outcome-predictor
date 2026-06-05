@@ -1,9 +1,9 @@
 stage,group,matchday,home_team,away_team
 Group,A,1,Mexico,South Africa
-Group,A,1,South Korea,Czechia
-Group,A,2,Czechia,South Africa
+Group,A,1,South Korea,Czech Republic
+Group,A,2,Czech Republic,South Africa
 Group,A,2,Mexico,South Korea
-Group,A,3,Czechia,Mexico
+Group,A,3,Czech Republic,Mexico
 Group,A,3,South Africa,South Korea
 
 Group,B,1,Canada,Bosnia and Herzegovina
@@ -27,12 +27,12 @@ Group,D,2,Turkey,Paraguay
 Group,D,3,Turkey,United States
 Group,D,3,Paraguay,Australia
 
-Group,E,1,Germany,Curacao
+Group,E,1,Germany,Curaçao
 Group,E,1,Ivory Coast,Ecuador
 Group,E,2,Germany,Ivory Coast
-Group,E,2,Ecuador,Curacao
+Group,E,2,Ecuador,Curaçao
 Group,E,3,Ecuador,Germany
-Group,E,3,Curacao,Ivory Coast
+Group,E,3,Curaçao,Ivory Coast
 
 Group,F,1,Netherlands,Japan
 Group,F,1,Sweden,Tunisia

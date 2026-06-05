@@ -7,12 +7,13 @@ def calculate_group_standings(group_results):
 
     Args:
         group_results: list of dicts with keys:
-            home_team, away_team, winner, probabilities
+            home_team, away_team, winner
+            (winner is a team name or "Draw")
 
     Returns:
         DataFrame with columns:
-            Team, W, D, L, Pts
-        sorted by Pts descending.
+            Team, P, W, D, L, Pts
+        sorted by Pts desc, then W desc.
     """
 
     standings = {}
@@ -26,6 +27,7 @@ def calculate_group_standings(group_results):
         if home not in standings:
             standings[home] = {
                 "Team": home,
+                "P": 0,
                 "W": 0,
                 "D": 0,
                 "L": 0,
@@ -35,11 +37,15 @@ def calculate_group_standings(group_results):
         if away not in standings:
             standings[away] = {
                 "Team": away,
+                "P": 0,
                 "W": 0,
                 "D": 0,
                 "L": 0,
                 "Pts": 0
             }
+
+        standings[home]["P"] += 1
+        standings[away]["P"] += 1
 
         if winner == "Draw":
             standings[home]["D"] += 1
@@ -47,12 +53,12 @@ def calculate_group_standings(group_results):
             standings[away]["D"] += 1
             standings[away]["Pts"] += 1
 
-        elif winner == "Home Win":
+        elif winner == home:
             standings[home]["W"] += 1
             standings[home]["Pts"] += 3
             standings[away]["L"] += 1
 
-        elif winner == "Away Win":
+        elif winner == away:
             standings[away]["W"] += 1
             standings[away]["Pts"] += 3
             standings[home]["L"] += 1
@@ -62,20 +68,10 @@ def calculate_group_standings(group_results):
     )
 
     df = df.sort_values(
-        "Pts",
-        ascending=False
+        ["Pts", "W"],
+        ascending=[False, False]
     ).reset_index(drop=True)
 
     df.index += 1
 
     return df
-
-
-def get_group_winners(standings_df, top_n=2):
-    """
-    Return top N teams from a group standings DataFrame.
-    """
-
-    return standings_df.head(top_n)[
-        "Team"
-    ].tolist()
