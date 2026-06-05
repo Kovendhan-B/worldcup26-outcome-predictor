@@ -1,0 +1,84 @@
+stage,group,matchday,home_team,away_team
+Group,A,1,Mexico,South Africa
+Group,A,1,South Korea,Czechia
+Group,A,2,Czechia,South Africa
+Group,A,2,Mexico,South Korea
+Group,A,3,Czechia,Mexico
+Group,A,3,South Africa,South Korea
+
+Group,B,1,Canada,Bosnia and Herzegovina
+Group,B,1,Qatar,Switzerland
+Group,B,2,Switzerland,Bosnia and Herzegovina
+Group,B,2,Canada,Qatar
+Group,B,3,Switzerland,Canada
+Group,B,3,Bosnia and Herzegovina,Qatar
+
+Group,C,1,Brazil,Morocco
+Group,C,1,Haiti,Scotland
+Group,C,2,Scotland,Morocco
+Group,C,2,Brazil,Haiti
+Group,C,3,Scotland,Brazil
+Group,C,3,Morocco,Haiti
+
+Group,D,1,United States,Paraguay
+Group,D,1,Australia,Turkey
+Group,D,2,United States,Australia
+Group,D,2,Turkey,Paraguay
+Group,D,3,Turkey,United States
+Group,D,3,Paraguay,Australia
+
+Group,E,1,Germany,Curacao
+Group,E,1,Ivory Coast,Ecuador
+Group,E,2,Germany,Ivory Coast
+Group,E,2,Ecuador,Curacao
+Group,E,3,Ecuador,Germany
+Group,E,3,Curacao,Ivory Coast
+
+Group,F,1,Netherlands,Japan
+Group,F,1,Sweden,Tunisia
+Group,F,2,Netherlands,Sweden
+Group,F,2,Japan,Tunisia
+Group,F,3,Japan,Netherlands
+Group,F,3,Tunisia,Sweden
+
+Group,G,1,Belgium,Egypt
+Group,G,1,Iran,New Zealand
+Group,G,2,Belgium,Iran
+Group,G,2,New Zealand,Egypt
+Group,G,3,Egypt,Iran
+Group,G,3,New Zealand,Belgium
+
+Group,H,1,Spain,Cape Verde
+Group,H,1,Saudi Arabia,Uruguay
+Group,H,2,Spain,Saudi Arabia
+Group,H,2,Uruguay,Cape Verde
+Group,H,3,Cape Verde,Saudi Arabia
+Group,H,3,Uruguay,Spain
+
+Group,I,1,France,Senegal
+Group,I,1,Iraq,Norway
+Group,I,2,France,Iraq
+Group,I,2,Norway,Senegal
+Group,I,3,Norway,France
+Group,I,3,Senegal,Iraq
+
+Group,J,1,Argentina,Algeria
+Group,J,1,Austria,Jordan
+Group,J,2,Argentina,Austria
+Group,J,2,Jordan,Algeria
+Group,J,3,Algeria,Austria
+Group,J,3,Jordan,Argentina
+
+Group,K,1,Portugal,DR Congo
+Group,K,1,Uzbekistan,Colombia
+Group,K,2,Portugal,Uzbekistan
+Group,K,2,Colombia,DR Congo
+Group,K,3,Colombia,Portugal
+Group,K,3,DR Congo,Uzbekistan
+
+Group,L,1,England,Croatia
+Group,L,1,Ghana,Panama
+Group,L,2,England,Ghana
+Group,L,2,Panama,Croatia
+Group,L,3,Panama,England
+Group,L,3,Croatia,Ghana
