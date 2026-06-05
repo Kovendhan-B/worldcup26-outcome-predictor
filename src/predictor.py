@@ -1,16 +1,19 @@
 import joblib
-from team_profiles import get_latest_team_profile
+from pathlib import Path
+from .team_profiles import get_latest_team_profile
 import pandas as pd
 
+_ROOT = Path(__file__).resolve().parent.parent
+
 model = joblib.load(
-    "../models/catboost_v3.pkl"
+    _ROOT / "models" / "catboost_v3.pkl"
 )
 
 feature_columns = joblib.load(
-    "../models/feature_columns.pkl"
+    _ROOT / "models" / "feature_columns.pkl"
 )
 features_df = pd.read_csv(
-    "../data/processed/features_v3.csv"
+    _ROOT / "data" / "processed" / "features_v3.csv"
 )
 
 def get_latest_team_stats(team):
@@ -247,19 +250,4 @@ def predict_match(
         "Home Win": float(round(probs[2] * 100, 2)),
         "Draw": float(round(probs[1] * 100, 2)),
         "Away Win": float(round(probs[0] * 100, 2))
-    }
-
-# print(predict_match("Brazil", "India"))
-# print(predict_match("Argentina", "Brazil"))
-# print(predict_match("France", "Germany"))
-# print(predict_match("San Marino", "Spain"))
-
-joblib.dump(
-    model,
-    "../models/catboost_worldcup_v3.pkl"
-)
-
-joblib.dump(
-    feature_columns,
-    "../models/feature_columns.pkl"
-)
+    }
