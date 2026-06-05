@@ -11,7 +11,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.append(str(PROJECT_ROOT))
 
 from src.monte_carlo import run_monte_carlo_simulations
-from src.flags import flag
+from src.flags import COUNTRY_CODES, FLAG_CDN
 
 # ----------------------------------
 # Page Config
@@ -51,7 +51,7 @@ num_sims = st.sidebar.slider(
     help="Higher numbers take longer but provide more stable probabilities."
 )
 
-run_button = st.sidebar.button("⚡ Run Simulations", use_container_width=True)
+run_button = st.sidebar.button("⚡ Run Simulations")
 
 # ----------------------------------
 # Main Content
@@ -97,9 +97,12 @@ if run_button:
     
     st.header("📊 Full Tournament Probabilities")
     
-    # Add flags to team names for the table display
     df_display = df.copy()
-    df_display["Team"] = df_display["Team"].apply(lambda t: f"{flag(t)} {t}")
+    
+    # Create a column for Flag URLs instead of raw HTML
+    df_display.insert(0, "Flag", df_display["Team"].apply(
+        lambda t: f"{FLAG_CDN}/{COUNTRY_CODES.get(t)}.png" if t in COUNTRY_CODES else None
+    ))
     
     # Format columns
     format_dict = {
@@ -108,6 +111,11 @@ if run_button:
     
     st.dataframe(
         df_display.style.format(format_dict),
+        column_config={
+            "Flag": st.column_config.ImageColumn(
+                "Flag", help="Country Flag"
+            )
+        },
         use_container_width=True,
         hide_index=True,
         height=800
