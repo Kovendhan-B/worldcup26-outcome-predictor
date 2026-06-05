@@ -181,15 +181,19 @@ if st.button("⚡ Start Tournament"):
                 )
 
                 home_label = (
-                    f"<b>{flag(match['home'])}</b>"
+                    f'<span style="color:#4CAF50; font-weight:bold;">'
+                    f'{flag(match["home"])}</span>'
                     if is_winner_home
-                    else flag(match["home"])
+                    else f'<span style="opacity:0.6;">'
+                    f'{flag(match["home"])}</span>'
                 )
 
                 away_label = (
-                    f"<b>{flag(match['away'])}</b>"
+                    f'<span style="color:#4CAF50; font-weight:bold;">'
+                    f'{flag(match["away"])}</span>'
                     if not is_winner_home
-                    else flag(match["away"])
+                    else f'<span style="opacity:0.6;">'
+                    f'{flag(match["away"])}</span>'
                 )
 
                 st.markdown(
