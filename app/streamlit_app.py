@@ -5,7 +5,7 @@ import pandas as pd
 import streamlit as st
 
 # ----------------------------------
-# Project imports
+# Project Imports
 # ----------------------------------
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -13,6 +13,7 @@ sys.path.append(str(PROJECT_ROOT))
 
 from src.predictor import predict_match
 from src.team_profiles import TeamProfiles
+from data.worldcup_teams import WORLD_CUP_2026_TEAMS
 
 # ----------------------------------
 # Page Config
@@ -61,11 +62,17 @@ with st.sidebar:
 
 profiles = TeamProfiles()
 
-teams = sorted(
-    set(profiles.df["home_team"])
-    |
+available_teams = set(
+    profiles.df["home_team"]
+).union(
     set(profiles.df["away_team"])
 )
+
+teams = sorted([
+    team
+    for team in WORLD_CUP_2026_TEAMS
+    if team in available_teams
+])
 
 # ----------------------------------
 # Title
@@ -74,7 +81,14 @@ teams = sorted(
 st.title("⚽ FIFA World Cup 2026 Match Predictor")
 
 st.markdown(
-    "Predict the outcome of an international football match using historical performance and Elo ratings."
+    """
+    Predict the outcome of international football matches
+    using historical statistics, recent form, and Elo ratings.
+    """
+)
+
+st.caption(
+    f"Available Teams: {len(teams)}"
 )
 
 # ----------------------------------
@@ -93,7 +107,7 @@ with col2:
     away_team = st.selectbox(
         "✈️ Away Team",
         teams,
-        index=min(1, len(teams)-1)
+        index=min(1, len(teams) - 1)
     )
 
 neutral = st.checkbox(
@@ -112,81 +126,92 @@ if home_team == away_team:
     st.stop()
 
 # ----------------------------------
-# Prediction Button
+# Prediction
 # ----------------------------------
 
 if st.button("🔮 Predict Match Outcome"):
 
-    result = predict_match(
-        home_team,
-        away_team,
-        neutral
-    )
+    try:
 
-    winner = max(
-        result,
-        key=result.get
-    )
-
-    winner_prob = result[winner]
-
-    st.success(
-        f"🏆 Predicted Outcome: {winner} ({winner_prob:.2f}%)"
-    )
-
-    st.divider()
-
-    # ------------------------------
-    # Metrics
-    # ------------------------------
-
-    col1, col2, col3 = st.columns(3)
-
-    with col1:
-        st.metric(
-            "🏠 Home Win",
-            f"{result['Home Win']:.2f}%"
+        result = predict_match(
+            home_team,
+            away_team,
+            neutral
         )
 
-    with col2:
-        st.metric(
-            "🤝 Draw",
-            f"{result['Draw']:.2f}%"
+        winner = max(
+            result,
+            key=result.get
         )
 
-    with col3:
-        st.metric(
-            "✈️ Away Win",
-            f"{result['Away Win']:.2f}%"
+        winner_prob = result[winner]
+
+        st.success(
+            f"🏆 Predicted Outcome: {winner} ({winner_prob:.2f}%)"
         )
 
-    # ------------------------------
-    # Probability Chart
-    # ------------------------------
+        st.divider()
 
-    st.subheader("Match Outcome Probabilities")
+        # --------------------------
+        # Metrics
+        # --------------------------
 
-    chart_df = pd.DataFrame({
-        "Outcome": [
-            "Home Win",
-            "Draw",
-            "Away Win"
-        ],
-        "Probability": [
-            result["Home Win"],
-            result["Draw"],
-            result["Away Win"]
-        ]
-    })
+        col1, col2, col3 = st.columns(3)
 
-    st.bar_chart(
-        chart_df.set_index("Outcome")
-    )
+        with col1:
+            st.metric(
+                "🏠 Home Win",
+                f"{result['Home Win']:.2f}%"
+            )
 
-    # ------------------------------
-    # Raw Values
-    # ------------------------------
+        with col2:
+            st.metric(
+                "🤝 Draw",
+                f"{result['Draw']:.2f}%"
+            )
 
-    with st.expander("View Raw Probabilities"):
+        with col3:
+            st.metric(
+                "✈️ Away Win",
+                f"{result['Away Win']:.2f}%"
+            )
 
-        st.json(result)
+        # --------------------------
+        # Probability Chart
+        # --------------------------
+
+        st.subheader(
+            "📊 Match Outcome Probabilities"
+        )
+
+        chart_df = pd.DataFrame({
+            "Outcome": [
+                "Home Win",
+                "Draw",
+                "Away Win"
+            ],
+            "Probability": [
+                result["Home Win"],
+                result["Draw"],
+                result["Away Win"]
+            ]
+        })
+
+        st.bar_chart(
+            chart_df.set_index("Outcome")
+        )
+
+        # --------------------------
+        # Raw Values
+        # --------------------------
+
+        with st.expander(
+            "View Raw Probabilities"
+        ):
+            st.json(result)
+
+    except Exception as e:
+
+        st.error(
+            f"Prediction failed: {e}"
+        )
