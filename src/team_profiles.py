@@ -33,7 +33,21 @@ def get_latest_team_profile(team):
         .iloc[-1]
     )
 
-    return latest
+    is_home = (latest["home_team"] == team)
+    prefix = "home_" if is_home else "away_"
+
+    return {
+        "matches_played": latest[f"{prefix}matches_played"],
+        "win_rate": latest[f"{prefix}win_rate"],
+        "draw_rate": latest[f"{prefix}draw_rate"],
+        "loss_rate": latest[f"{prefix}loss_rate"],
+        "avg_goals_scored": latest[f"{prefix}avg_goals_scored"],
+        "avg_goals_conceded": latest[f"{prefix}avg_goals_conceded"],
+        "last5_win_rate": latest[f"{prefix}last5_win_rate"],
+        "last5_avg_goals_scored": latest[f"{prefix}last5_avg_goals_scored"],
+        "last5_avg_goals_conceded": latest[f"{prefix}last5_avg_goals_conceded"],
+        "elo": latest[f"{prefix}elo"]
+    }
 
 
 class TeamProfiles:
@@ -70,4 +84,18 @@ class TeamProfiles:
             .iloc[-1]
         )
 
-        return latest
+        is_home = (latest["home_team"] == team)
+        prefix = "home_" if is_home else "away_"
+
+        return {
+            "matches_played": latest[f"{prefix}matches_played"],
+            "win_rate": latest[f"{prefix}win_rate"],
+            "draw_rate": latest[f"{prefix}draw_rate"],
+            "loss_rate": latest[f"{prefix}loss_rate"],
+            "avg_goals_scored": latest[f"{prefix}avg_goals_scored"],
+            "avg_goals_conceded": latest[f"{prefix}avg_goals_conceded"],
+            "last5_win_rate": latest[f"{prefix}last5_win_rate"],
+            "last5_avg_goals_scored": latest[f"{prefix}last5_avg_goals_scored"],
+            "last5_avg_goals_conceded": latest[f"{prefix}last5_avg_goals_conceded"],
+            "elo": latest[f"{prefix}elo"]
+        }

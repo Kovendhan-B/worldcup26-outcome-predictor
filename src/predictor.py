@@ -68,35 +68,35 @@ def build_match_features(
     row["year"] = 2026
     row["month"] = 6
 
-    row["home_matches_played"] = home["home_matches_played"]
-    row["away_matches_played"] = away["away_matches_played"]
+    row["home_matches_played"] = home["matches_played"]
+    row["away_matches_played"] = away["matches_played"]
 
-    row["home_win_rate"] = home["home_win_rate"]
-    row["away_win_rate"] = away["away_win_rate"]
+    row["home_win_rate"] = home["win_rate"]
+    row["away_win_rate"] = away["win_rate"]
 
-    row["home_draw_rate"] = home["home_draw_rate"]
-    row["away_draw_rate"] = away["away_draw_rate"]
+    row["home_draw_rate"] = home["draw_rate"]
+    row["away_draw_rate"] = away["draw_rate"]
 
-    row["home_loss_rate"] = home["home_loss_rate"]
-    row["away_loss_rate"] = away["away_loss_rate"]
+    row["home_loss_rate"] = home["loss_rate"]
+    row["away_loss_rate"] = away["loss_rate"]
 
-    row["home_avg_goals_scored"] = home["home_avg_goals_scored"]
-    row["away_avg_goals_scored"] = away["away_avg_goals_scored"]
+    row["home_avg_goals_scored"] = home["avg_goals_scored"]
+    row["away_avg_goals_scored"] = away["avg_goals_scored"]
 
-    row["home_avg_goals_conceded"] = home["home_avg_goals_conceded"]
-    row["away_avg_goals_conceded"] = away["away_avg_goals_conceded"]
+    row["home_avg_goals_conceded"] = home["avg_goals_conceded"]
+    row["away_avg_goals_conceded"] = away["avg_goals_conceded"]
 
-    row["home_last5_win_rate"] = home["home_last5_win_rate"]
-    row["away_last5_win_rate"] = away["away_last5_win_rate"]
+    row["home_last5_win_rate"] = home["last5_win_rate"]
+    row["away_last5_win_rate"] = away["last5_win_rate"]
 
-    row["home_last5_avg_goals_scored"] = home["home_last5_avg_goals_scored"]
-    row["away_last5_avg_goals_scored"] = away["away_last5_avg_goals_scored"]
+    row["home_last5_avg_goals_scored"] = home["last5_avg_goals_scored"]
+    row["away_last5_avg_goals_scored"] = away["last5_avg_goals_scored"]
 
-    row["home_last5_avg_goals_conceded"] = home["home_last5_avg_goals_conceded"]
-    row["away_last5_avg_goals_conceded"] = away["away_last5_avg_goals_conceded"]
+    row["home_last5_avg_goals_conceded"] = home["last5_avg_goals_conceded"]
+    row["away_last5_avg_goals_conceded"] = away["last5_avg_goals_conceded"]
 
-    row["home_elo"] = home["home_elo"]
-    row["away_elo"] = away["away_elo"]
+    row["home_elo"] = home["elo"]
+    row["away_elo"] = away["elo"]
 
     # --------------------------
     # Difference Features
