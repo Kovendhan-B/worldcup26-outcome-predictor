@@ -1,15 +1,19 @@
 from src.predictor import predict_match
 from src.standings import calculate_group_standings
 import pandas as pd
+import random
 
 
 # ----------------------------------
 # Match Simulation
 # ----------------------------------
 
-def simulate_match(home_team, away_team, allow_draw=True):
+def simulate_match(home_team, away_team, allow_draw=True, upset_chance=0.0):
     """
     Simulate a single match.
+
+    upset_chance: 0.0 = always pick favorite (realistic)
+                  1.0 = fully weighted random (chaotic)
 
     Returns dict with:
         home_team, away_team, winner, outcome, probabilities
@@ -24,25 +28,47 @@ def simulate_match(home_team, away_team, allow_draw=True):
         neutral=True
     )
 
-    outcome = max(probs, key=probs.get)
+    # Decide: deterministic or random?
+    use_random = random.random() < upset_chance
+
+    if use_random:
+        outcomes = list(probs.keys())
+        weights = list(probs.values())
+
+        if not allow_draw:
+            draw_idx = outcomes.index("Draw")
+            draw_weight = weights[draw_idx]
+            outcomes.pop(draw_idx)
+            weights.pop(draw_idx)
+            total = sum(weights)
+            weights = [
+                w + (w / total) * draw_weight
+                for w in weights
+            ]
+
+        outcome = random.choices(
+            outcomes, weights=weights, k=1
+        )[0]
+
+    else:
+        # Deterministic: pick highest probability
+        if not allow_draw:
+            knockout_probs = {
+                k: v for k, v in probs.items()
+                if k != "Draw"
+            }
+            outcome = max(
+                knockout_probs, key=knockout_probs.get
+            )
+        else:
+            outcome = max(probs, key=probs.get)
 
     if outcome == "Home Win":
         winner = home_team
-
     elif outcome == "Away Win":
         winner = away_team
-
     else:
-        if allow_draw:
-            winner = "Draw"
-        else:
-            # Knockout: no draws allowed
-            if probs["Home Win"] >= probs["Away Win"]:
-                winner = home_team
-                outcome = "Home Win"
-            else:
-                winner = away_team
-                outcome = "Away Win"
+        winner = "Draw"
 
     return {
         "home_team": home_team,
@@ -53,11 +79,9 @@ def simulate_match(home_team, away_team, allow_draw=True):
     }
 
 
-# ----------------------------------
 # Group Stage
-# ----------------------------------
 
-def simulate_group_stage(fixtures_path):
+def simulate_group_stage(fixtures_path, upset_chance=0.0):
     """
     Simulate all group stage matches.
 
@@ -92,7 +116,8 @@ def simulate_group_stage(fixtures_path):
             result = simulate_match(
                 match["home_team"],
                 match["away_team"],
-                allow_draw=True
+                allow_draw=True,
+                upset_chance=upset_chance
             )
 
             result["group"] = group
@@ -221,7 +246,7 @@ def build_r32_matchups(
 # Knockout Round
 # ----------------------------------
 
-def simulate_knockout_round(matchups, round_name):
+def simulate_knockout_round(matchups, round_name, upset_chance=0.0):
     """
     Simulate a knockout round (no draws).
 
@@ -237,7 +262,8 @@ def simulate_knockout_round(matchups, round_name):
 
         result = simulate_match(
             home, away,
-            allow_draw=False
+            allow_draw=False,
+            upset_chance=upset_chance
         )
 
         result["stage"] = round_name
@@ -251,7 +277,7 @@ def simulate_knockout_round(matchups, round_name):
 # Full Tournament
 # ----------------------------------
 
-def simulate_full_tournament(fixtures_path):
+def simulate_full_tournament(fixtures_path, upset_chance=0.0):
     """
     Simulate the entire World Cup 2026.
 
@@ -266,7 +292,7 @@ def simulate_full_tournament(fixtures_path):
     # --- Group Stage ---
 
     group_results, group_standings = (
-        simulate_group_stage(fixtures_path)
+        simulate_group_stage(fixtures_path, upset_chance)
     )
 
     # --- Qualified Teams ---
@@ -285,7 +311,7 @@ def simulate_full_tournament(fixtures_path):
 
     r32_results, r32_winners = (
         simulate_knockout_round(
-            r32_matchups, "Round of 32"
+            r32_matchups, "Round of 32", upset_chance
         )
     )
 
@@ -298,7 +324,7 @@ def simulate_full_tournament(fixtures_path):
 
     r16_results, r16_winners = (
         simulate_knockout_round(
-            r16_matchups, "Round of 16"
+            r16_matchups, "Round of 16", upset_chance
         )
     )
 
@@ -311,7 +337,7 @@ def simulate_full_tournament(fixtures_path):
 
     qf_results, qf_winners = (
         simulate_knockout_round(
-            qf_matchups, "Quarterfinal"
+            qf_matchups, "Quarterfinal", upset_chance
         )
     )
 
@@ -324,7 +350,7 @@ def simulate_full_tournament(fixtures_path):
 
     sf_results, sf_winners = (
         simulate_knockout_round(
-            sf_matchups, "Semifinal"
+            sf_matchups, "Semifinal", upset_chance
         )
     )
 
@@ -336,7 +362,7 @@ def simulate_full_tournament(fixtures_path):
 
     final_results, final_winners = (
         simulate_knockout_round(
-            final_matchups, "Final"
+            final_matchups, "Final", upset_chance
         )
     )
 

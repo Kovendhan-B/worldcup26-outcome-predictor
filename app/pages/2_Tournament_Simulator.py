@@ -43,7 +43,8 @@ if st.button("⚡ Start Tournament"):
     with st.spinner("Simulating tournament..."):
 
         data = simulate_full_tournament(
-            "data/fixtures/worldcup2026_fixtures.csv"
+            "data/fixtures/worldcup2026_fixtures.csv",
+            upset_chance=0.15
         )
 
     st.success("Tournament Simulation Complete!")
