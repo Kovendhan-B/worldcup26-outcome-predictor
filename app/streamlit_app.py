@@ -61,19 +61,26 @@ with st.sidebar:
 # Load Teams
 # ----------------------------------
 
-profiles = TeamProfiles()
+@st.cache_resource
+def load_team_profiles():
+    return TeamProfiles()
 
-available_teams = set(
-    profiles.df["home_team"]
-).union(
-    set(profiles.df["away_team"])
-)
+@st.cache_data
+def get_available_teams():
+    p = load_team_profiles()
+    available = set(
+        p.df["home_team"]
+    ).union(
+        set(p.df["away_team"])
+    )
+    return sorted([
+        team
+        for team in WORLD_CUP_2026_TEAMS
+        if team in available
+    ])
 
-teams = sorted([
-    team
-    for team in WORLD_CUP_2026_TEAMS
-    if team in available_teams
-])
+profiles = load_team_profiles()
+teams = get_available_teams()
 
 # ----------------------------------
 # Banner
@@ -147,11 +154,15 @@ if home_team == away_team:
 # Prediction
 # ----------------------------------
 
+@st.cache_data
+def cached_predict(h_team, a_team, is_neutral):
+    return predict_match(h_team, a_team, is_neutral)
+
 if st.button("🔮 Predict Match Outcome"):
 
     try:
 
-        result = predict_match(
+        result = cached_predict(
             home_team,
             away_team,
             neutral
