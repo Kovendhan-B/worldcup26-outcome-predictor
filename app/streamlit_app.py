@@ -3,6 +3,7 @@ from pathlib import Path
 
 import pandas as pd
 import streamlit as st
+import plotly.graph_objects as go
 
 # ----------------------------------
 # Project Imports
@@ -175,69 +176,73 @@ if st.button("🔮 Predict Match Outcome"):
 
         winner_prob = result[winner]
 
-        st.markdown(
-            f"🏆 Predicted Outcome: {winner} ({winner_prob:.2f}%) — {flag(home_team)} vs {flag(away_team)}",
-            unsafe_allow_html=True
-        )
-
-        st.divider()
-
-        # --------------------------
-        # Metrics
-        # --------------------------
-
-        col1, col2, col3 = st.columns(3)
-
-        with col1:
-            st.metric(
-                "🏠 Home Win",
-                f"{result['Home Win']:.2f}%"
+        with st.container(border=True):
+            st.markdown(
+                f"<h2 style='text-align: center; color: #1E88E5;'>🏆 {winner}</h2>"
+                f"<p style='text-align: center; font-size: 1.2rem; color: #555;'>Predicted Outcome ({winner_prob:.2f}%)</p>",
+                unsafe_allow_html=True
+            )
+            st.markdown(
+                f"<h4 style='text-align: center;'>{flag(home_team)} {home_team} <span style='color:#888;'>vs</span> {away_team} {flag(away_team)}</h4>",
+                unsafe_allow_html=True
             )
 
-        with col2:
-            st.metric(
-                "🤝 Draw",
-                f"{result['Draw']:.2f}%"
+            st.divider()
+
+            # --------------------------
+            # Metrics
+            # --------------------------
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric(f"🏠 {home_team}", f"{result['Home Win']:.2f}%")
+            with col2:
+                st.metric("🤝 Draw", f"{result['Draw']:.2f}%")
+            with col3:
+                st.metric(f"✈️ {away_team}", f"{result['Away Win']:.2f}%")
+
+            # --------------------------
+            # Probability Chart
+            # --------------------------
+            st.markdown("<br>", unsafe_allow_html=True)
+            
+            fig = go.Figure()
+            fig.add_trace(go.Bar(
+                x=[result['Home Win']], y=[''], orientation='h',
+                name=f"{home_team} Win", marker=dict(color='#1E88E5', line=dict(width=1, color='rgba(0,0,0,0.1)')),
+                text=f"{result['Home Win']:.1f}%", textposition='auto'
+            ))
+            fig.add_trace(go.Bar(
+                x=[result['Draw']], y=[''], orientation='h',
+                name="Draw", marker=dict(color='#B0BEC5', line=dict(width=1, color='rgba(0,0,0,0.1)')),
+                text=f"{result['Draw']:.1f}%", textposition='auto'
+            ))
+            fig.add_trace(go.Bar(
+                x=[result['Away Win']], y=[''], orientation='h',
+                name=f"{away_team} Win", marker=dict(color='#FF8A65', line=dict(width=1, color='rgba(0,0,0,0.1)')),
+                text=f"{result['Away Win']:.1f}%", textposition='auto'
+            ))
+            
+            fig.update_layout(
+                barmode='stack',
+                height=150,
+                margin=dict(l=0, r=0, t=0, b=0),
+                xaxis=dict(showgrid=False, zeroline=False, visible=False, range=[0, 100]),
+                yaxis=dict(showgrid=False, zeroline=False, visible=False),
+                plot_bgcolor='rgba(0,0,0,0)',
+                paper_bgcolor='rgba(0,0,0,0)',
+                showlegend=True,
+                legend=dict(
+                    orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5,
+                    font=dict(size=12)
+                )
             )
-
-        with col3:
-            st.metric(
-                "✈️ Away Win",
-                f"{result['Away Win']:.2f}%"
-            )
-
-        # --------------------------
-        # Probability Chart
-        # --------------------------
-
-        st.subheader(
-            "📊 Match Outcome Probabilities"
-        )
-
-        chart_df = pd.DataFrame({
-            "Outcome": [
-                "Home Win",
-                "Draw",
-                "Away Win"
-            ],
-            "Probability": [
-                result["Home Win"],
-                result["Draw"],
-                result["Away Win"]
-            ]
-        })
-
-        st.bar_chart(
-            chart_df.set_index("Outcome")
-        )
+            
+            st.plotly_chart(fig, use_container_width=True)
 
         # --------------------------
         # Raw Values
         # --------------------------
-
-        with st.expander(
-            "View Raw Probabilities"
-        ):
+        with st.expander("View Raw Probabilities"):
             st.json(result)
 
     except Exception as e:
